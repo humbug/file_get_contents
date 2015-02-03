@@ -22,7 +22,7 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Under PHP 5.6+ no requests will be modified.');
         }
         if (null === self::$result) {
-            $result = humbug_get_contents('https://www.howsmyssl.com/a/check');
+            $result = humbug_get_contents('https://howsmyssl.com/a/check');
             self::$result = json_decode($result, true);
         }
     }
