@@ -238,7 +238,7 @@ class FileGetContents
         // If SSL_CERT_FILE env variable points to a valid certificate/bundle, use that.
         // This mimics how OpenSSL uses the SSL_CERT_FILE env variable.
         $envCertFile = getenv('SSL_CERT_FILE');
-        if ($envCertFile && is_readable($envCertFile) && validateCaFile(file_get_contents($envCertFile))) {
+        if ($envCertFile && is_readable($envCertFile) && $this->validateCaFile(file_get_contents($envCertFile))) {
             // Possibly throw exception instead of ignoring SSL_CERT_FILE if it's invalid?
             return $envCertFile;
         }
@@ -257,12 +257,12 @@ class FileGetContents
 
         $found = null;
         $configured = ini_get('openssl.cafile');
-        if ($configured && strlen($configured) > 0 && is_readable($caBundle) && validateCaFile(file_get_contents($caBundle))) {
+        if ($configured && strlen($configured) > 0 && is_readable($caBundle) && $this->validateCaFile(file_get_contents($caBundle))) {
             $found = true;
             $caBundle = $configured;
         } else {
             foreach ($caBundlePaths as $caBundle) {
-                if (@is_readable($caBundle) && validateCaFile(file_get_contents($caBundle))) {
+                if (@is_readable($caBundle) && $this->validateCaFile(file_get_contents($caBundle))) {
                     $found = true;
                     break;
                 }
@@ -281,6 +281,20 @@ class FileGetContents
             $found = $caBundle;
         }
         return $found;
+    }
+
+    protected function validateCaFile($contents) {
+        // assume the CA is valid if php is vunerable to
+        // https://www.sektioneins.de/advisories/advisory-012013-php-openssl_x509_parse-memory-corruption-vulnerability.html
+        if (
+            PHP_VERSION_ID <= 50327
+            || (PHP_VERSION_ID >= 50400 && PHP_VERSION_ID < 50422)
+            || (PHP_VERSION_ID >= 50500 && PHP_VERSION_ID < 50506)
+        ) {
+            return !empty($contents);
+        }
+
+        return (bool) openssl_x509_parse($contents);
     }
 
 }
