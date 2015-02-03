@@ -10,8 +10,6 @@
 
 namespace Humbug;
 
-use RuntimeException;
-
 /**
  * This is largely extracted from the Composer Installer where originally implemented.
  */
@@ -36,7 +34,7 @@ class FileGetContents
     protected function checkConfig()
     {   
         if (!extension_loaded('openssl')) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 'The openssl extension is not loaded but is required for secure HTTPS connections'
             );
         }
@@ -110,7 +108,7 @@ class FileGetContents
         } elseif ($cafile) {
             $options['ssl']['cafile'] = $cafile;
         } else {
-            throw new RuntimeException('A valid cafile could not be located locally.');
+            throw new \RuntimeException('A valid cafile could not be located locally.');
         }
 
         if (version_compare(PHP_VERSION, '5.4.13') >= 0) {
@@ -130,7 +128,7 @@ class FileGetContents
      *
      * @param string $url URL the context is to be used for
      * @return resource Default context
-     * @throws \RuntimeException if https proxy required and OpenSSL uninstalled
+     * @throws \\RuntimeException if https proxy required and OpenSSL uninstalled
      */
     protected function getMergedStreamContext($url)
     {
@@ -158,7 +156,7 @@ class FileGetContents
             $proxyURL = str_replace(array('http://', 'https://'), array('tcp://', 'ssl://'), $proxyURL);
 
             if (0 === strpos($proxyURL, 'ssl:') && !extension_loaded('openssl')) {
-                throw new RuntimeException('You must enable the openssl extension to use a proxy over https');
+                throw new \RuntimeException('You must enable the openssl extension to use a proxy over https');
             }
 
             $options['http'] = array(
