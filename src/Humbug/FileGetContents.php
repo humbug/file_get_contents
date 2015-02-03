@@ -25,10 +25,10 @@ class FileGetContents
         $this->options = array_replace_recursive($this->options, $options);
     }
 
-    public function get($filename, $context = null, $offset = -1, $maxlen = null)
+    public function get($filename, $context = null)
     {
         $context = $this->getStreamContext($filename);
-        return file_get_contents($filename, null, $context, $offset, $maxlen);
+        return file_get_contents($filename, null, $context);
     }
 
     protected function checkConfig()
