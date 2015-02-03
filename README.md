@@ -3,13 +3,30 @@ file_get_contents
 
 Defines a `humbug_get_contents()` function that will transparently call `file_get_contents()`
 except for HTTPS URIs where it will inject a context configured to enable secure
-SSL/TLS requests on all versions of PHP less than 5.6. The function argument lists
-are identical.
+SSL/TLS requests on all versions of PHP less than 5.6. The function argument lists are similar.
+
+[![Build Status](https://travis-ci.org/padraic/file_get_contents.svg)](https://travis-ci.org/padraic/file_get_contents)
 
 All versions of PHP below 5.6 disable SSL/TLS protections by default. This has led to
 the spread of insecure uses of `file_get_contents()` to retrieve HTTPS resources. For example,
 PHAR files or API requests. Without SSL/TLS protections, all such requests are vulnerable
 to Man-In-The-Middle attacks.
+
+Installation
+============
+
+```json
+require: {
+   "padraic/file_get_contents": "~1.0@dev"
+}
+```
+
+Usage
+=====
+
+```php
+humbug_get_contents('https://www.howsmyssl.com/a/check');
+```
 
 This solution was originally implemented within the Composer Installer, so this is a
 straightforward extraction of that code into a standalone package with just the one function.
