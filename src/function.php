@@ -17,7 +17,7 @@ if (!function_exists('humbug_get_contents')) {
             if (!isset($fileGetContents)) {
                 $fileGetContents = new FileGetContents;
             }
-            return $fileGetContents->get($filename, $context, $offset, $maxlen);
+            return $fileGetContents->get($filename, $context);
         }
         return file_get_contents($filename, $use_include_path, $context);
     }
