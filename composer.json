@@ -1,6 +1,6 @@
 {
-    "name": "padraic/file_get_contents",
-    "description": "",
+    "name": "padraic/humbug_get_contents",
+    "description": "Secure wrapper for accessing HTTPS resources with file_get_contents for PHP 5.3+",
     "keywords": ["file_get_contents", "download", "ssl", "tls", "https", "http"],
     "homepage": "https://github.com/padraic/file_get_contents",
     "type": "library",
