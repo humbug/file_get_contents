@@ -19,7 +19,7 @@ Installation
 
 ```json
 require: {
-   "padraic/file_get_contents": "~1.0"
+   "padraic/humbug_get_contents": "~1.0"
 }
 ```
 
