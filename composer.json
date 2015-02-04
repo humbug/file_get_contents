@@ -4,6 +4,7 @@
     "keywords": ["file_get_contents", "download", "ssl", "tls", "https", "http"],
     "homepage": "https://github.com/padraic/file_get_contents",
     "type": "library",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Pádraic Brady",
