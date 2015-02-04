@@ -1,5 +1,5 @@
-file_get_contents
-=================
+humbug_get_contents
+===================
 
 [![Build Status](https://travis-ci.org/padraic/file_get_contents.svg)](https://travis-ci.org/padraic/file_get_contents)
 
