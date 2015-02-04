@@ -27,7 +27,7 @@ Usage
 =====
 
 ```php
-humbug_get_contents('https://www.howsmyssl.com/a/check');
+$content = humbug_get_contents('https://www.howsmyssl.com/a/check');
 ```
 
 You can use this function as an immediate alternative to file_get_contents() in any code
