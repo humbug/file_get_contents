@@ -34,12 +34,17 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
 
     public function testRating()
     {
-        $this->assertEquals('Probably Okay', self::$result['rating']);
+        $this->assertEquals('Improvable', self::$result['rating']);
     }
 
     public function testTlsCompression()
     {
         $this->assertFalse(self::$result['tls_compression_supported']);
+    }
+
+    public function testSslNotUsed()
+    {
+        $this->assertEquals(stripos(self::$result['tls_version'], 'tls 1.'), 0);
     }
 
     public function testBeastVulnerability()
