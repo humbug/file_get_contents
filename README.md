@@ -45,3 +45,31 @@ actually the point ;). An error should have two causes:
 
 Neither is, in any way, a justification for disabling SSL/TLS and leaving end users vulnerable
 to getting hacked. Resolve such errors; don't ignore or workaround them.
+
+###Headers
+
+You can set request headers, and get response headers, using the following functions.
+This support is based around stream contexts, but is offered in some limited form
+here as a convenience. If your needs are going to extend this, you should use a
+more complete solution and double check that it fully enables and supports TLS.
+
+```php
+/**
+ * Don't end headers with \r\n when setting via array
+ */
+humbug_set_headers(array(
+    'Accept-Language: da',
+    'User-Agent: Humbug'
+));
+$response = humbug_get_contents('http://www.example.com');
+```
+
+Request headers are emptied when used, so you would need to reset on each
+`humbug_get_contents()` call.
+
+To retrieve an array of the last response headers:
+
+```php
+$response = humbug_get_contents('http://www.example.com');
+$headers = humbug_get_headers();
+```
