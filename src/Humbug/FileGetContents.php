@@ -70,7 +70,14 @@ class FileGetContents
         $headers = self::getNextRequestHeaders();
         if (!empty($headers)) {
             $options = stream_context_get_options($context);
-            $headers = empty($options) ? $headers : array_merge($options['http']['headers'], $headers);
+            if (!isset($options['http'])) {
+                $options['http'] = array('header'=>array());
+            } elseif (!isset($options['http']['header'])) {
+                $options['http']['header'] = array();
+            } elseif (is_string($options['http']['header'])) {
+                $options['http']['header'] = explode("\r\n", $options['http']['header']);
+            }
+            $headers = empty($options['http']['headers']) ? $headers : array_merge($options['http']['headers'], $headers);
             stream_context_set_option(
                 $context,
                 'http',

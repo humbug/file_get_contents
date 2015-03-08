@@ -51,7 +51,7 @@ if (!function_exists('humbug_get_headers')) {
 
 if (!function_exists('humbug_set_headers')) {
 
-    function humbug_set_headers($headers) {
+    function humbug_set_headers(array $headers) {
         return FileGetContents::setNextRequestHeaders($headers);
     }
 

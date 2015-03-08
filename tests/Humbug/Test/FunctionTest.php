@@ -76,5 +76,16 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
         humbug_get_contents('http://padraic.github.io');
         $this->assertTrue(count(humbug_get_headers()) > 0);
     }
+
+    public function testCanSetRequestHeaders()
+    {
+        humbug_set_headers(array(
+            'Accept-Language: da',
+            'User-Agent: Humbug'
+        ));
+        $out = humbug_get_contents('http://myhttp.info/');
+        $this->assertEquals(1, preg_match('%'.preg_quote('<td>Accept language</td><td>da</td>').'%', $out));
+        $this->assertEquals(1, preg_match('%'.preg_quote('<td>User agent</td><td>Humbug</td>').'%', $out));
+    }
     
 }
