@@ -18,6 +18,10 @@ class FileGetContents
 
     protected $options = array('http' => array());
 
+    protected static $lastResponseHeaders;
+
+    protected static $nextRequestHeaders;
+
     public function __construct()
     {
         $this->checkConfig();
@@ -28,7 +32,53 @@ class FileGetContents
     public function get($filename, $context = null)
     {
         $context = $this->getStreamContext($filename);
-        return file_get_contents($filename, null, $context);
+        self::setHttpHeaders($context);
+        $result = file_get_contents($filename, null, $context);
+        self::setLastResponseHeaders($http_response_header);
+        return $result;
+    }
+
+    public static function setLastResponseHeaders($headers)
+    {
+        self::$lastResponseHeaders = $headers;
+    }
+
+    public static function getLastResponseHeaders()
+    {
+        return self::$lastResponseHeaders;
+    }
+    
+    public static function setNextRequestHeaders(array $headers)
+    {
+        self::$nextRequestHeaders = $headers;
+    }
+
+    public static function hasNextRequestHeaders()
+    {
+        return !empty(self::$nextRequestHeaders);
+    }
+
+    public static function getNextRequestHeaders()
+    {
+        $return = self::$nextRequestHeaders;
+        self::$nextRequestHeaders = null;
+        return $return;
+    }
+
+    public static function setHttpHeaders($context)
+    {
+        $headers = self::getNextRequestHeaders();
+        if (!empty($headers)) {
+            $options = stream_context_get_options($context);
+            $headers = empty($options) ? $headers : array_merge($options['http']['headers'], $headers);
+            stream_context_set_option(
+                $context,
+                'http',
+                'header',
+                $headers
+            );
+        }
+        return $context;
     }
 
     protected function checkConfig()
@@ -300,5 +350,4 @@ class FileGetContents
 
         return (bool) openssl_x509_parse($contents);
     }
-
 }
