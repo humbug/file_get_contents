@@ -31,10 +31,6 @@ if (!function_exists('humbug_get_contents')) {
         return $return;
     }
 
-} else {
-    throw new \RuntimeException(
-        'Function has already been defined'
-    );
 }
 
 if (!function_exists('humbug_get_headers')) {
@@ -43,10 +39,6 @@ if (!function_exists('humbug_get_headers')) {
         return FileGetContents::getLastResponseHeaders();
     }
 
-} else {
-    throw new \RuntimeException(
-        'Function has already been defined'
-    );
 }
 
 if (!function_exists('humbug_set_headers')) {
@@ -55,8 +47,4 @@ if (!function_exists('humbug_set_headers')) {
         return FileGetContents::setNextRequestHeaders($headers);
     }
 
-} else {
-    throw new \RuntimeException(
-        'Function has already been defined'
-    );
 }
