@@ -27,7 +27,9 @@ if (!function_exists('humbug_get_contents')) {
             $context = FileGetContents::setHttpHeaders($context);
         }
         $return = file_get_contents($filename, $use_include_path, $context);
-        FileGetContents::setLastResponseHeaders($http_response_header);
+        if (isset($http_response_header)) {
+            FileGetContents::setLastResponseHeaders($http_response_header);
+        }
         return $return;
     }
 
