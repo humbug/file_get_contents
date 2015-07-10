@@ -17,10 +17,8 @@ file or json response.
 Installation
 ============
 
-```json
-require: {
-   "padraic/humbug_get_contents": "~1.0"
-}
+```sh
+composer require padraic/humbug_get_contents
 ```
 
 Usage
