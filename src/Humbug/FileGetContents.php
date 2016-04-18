@@ -10,6 +10,8 @@
 
 namespace Humbug;
 
+use Composer\CaBundle\CaBundle;
+
 /**
  * This is largely extracted from the Composer Installer where originally implemented.
  */
@@ -164,7 +166,7 @@ class FileGetContents
         );
 
         if (!$cafile) {
-            $cafile = self::getSystemCaRootBundlePath();
+            $cafile = CaBundle::getSystemCaRootBundlePath();
         }
         if (is_dir($cafile)) {
             $options['ssl']['capath'] = $cafile;
@@ -258,100 +260,20 @@ class FileGetContents
     }
 
     /**
-    * This method was adapted from Sslurp.
-    * https://github.com/EvanDotPro/Sslurp
-    *
-    * (c) Evan Coury <me@evancoury.com>
-    *
-    * For the full copyright and license information, please see below:
-    *
-    * Copyright (c) 2013, Evan Coury
-    * All rights reserved.
-    *
-    * Redistribution and use in source and binary forms, with or without modification,
-    * are permitted provided that the following conditions are met:
-    *
-    *     * Redistributions of source code must retain the above copyright notice,
-    *       this list of conditions and the following disclaimer.
-    *
-    *     * Redistributions in binary form must reproduce the above copyright notice,
-    *       this list of conditions and the following disclaimer in the documentation
-    *       and/or other materials provided with the distribution.
-    *
-    * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-    * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-    * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-    * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-    * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-    * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-    * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-    * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-    */
+     * @deprecated
+     */
     public static function getSystemCaRootBundlePath()
     {
-        static $found = null;
-        if ($found !== null) {
-            return $found;
-        }
-
-        // If SSL_CERT_FILE env variable points to a valid certificate/bundle, use that.
-        // This mimics how OpenSSL uses the SSL_CERT_FILE env variable.
-        $envCertFile = getenv('SSL_CERT_FILE');
-        if ($envCertFile && is_readable($envCertFile) && self::validateCaFile(file_get_contents($envCertFile))) {
-            // Possibly throw exception instead of ignoring SSL_CERT_FILE if it's invalid?
-            return $envCertFile;
-        }
-
-        $caBundlePaths = array(
-            '/etc/pki/tls/certs/ca-bundle.crt', // Fedora, RHEL, CentOS (ca-certificates package)
-            '/etc/ssl/certs/ca-certificates.crt', // Debian, Ubuntu, Gentoo, Arch Linux (ca-certificates package)
-            '/etc/ssl/ca-bundle.pem', // SUSE, openSUSE (ca-certificates package)
-            '/usr/local/share/certs/ca-root-nss.crt', // FreeBSD (ca_root_nss_package)
-            '/usr/ssl/certs/ca-bundle.crt', // Cygwin
-            '/opt/local/share/curl/curl-ca-bundle.crt', // OS X macports, curl-ca-bundle package
-            '/usr/local/share/curl/curl-ca-bundle.crt', // Default cURL CA bunde path (without --with-ca-bundle option)
-            '/usr/share/ssl/certs/ca-bundle.crt', // Really old RedHat?
-            '/etc/ssl/cert.pem', // OpenBSD
-        );
-
-        $found = null;
-        $configured = ini_get('openssl.cafile');
-        if ($configured && strlen($configured) > 0 && is_readable($caBundle) && self::validateCaFile(file_get_contents($caBundle))) {
-            $found = true;
-            $caBundle = $configured;
-        } else {
-            foreach ($caBundlePaths as $caBundle) {
-                if (@is_readable($caBundle) && self::validateCaFile(file_get_contents($caBundle))) {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                foreach ($caBundlePaths as $caBundle) {
-                    $caBundle = dirname($caBundle);
-                    if (is_dir($caBundle) && glob($caBundle.'/*')) {
-                        $found = true;
-                        break;
-                    }
-                }
-            }
-        }
-        if ($found) {
-            $found = $caBundle;
-        }
-        return $found;
+        return CaBundle::getSystemCaRootBundlePath();
     }
 
+    /**
+     * @deprecated
+     */
     protected static function validateCaFile($contents) {
         // assume the CA is valid if php is vunerable to
         // https://www.sektioneins.de/advisories/advisory-012013-php-openssl_x509_parse-memory-corruption-vulnerability.html
-        if (
-            PHP_VERSION_ID <= 50327
-            || (PHP_VERSION_ID >= 50400 && PHP_VERSION_ID < 50422)
-            || (PHP_VERSION_ID >= 50500 && PHP_VERSION_ID < 50506)
-        ) {
+        if (!CaBundle::isOpensslParseSafe()) {
             return !empty($contents);
         }
 

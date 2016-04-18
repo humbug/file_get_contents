@@ -16,7 +16,8 @@
         "issues": "https://github.com/padraic/file_get_contents/issues"
     },
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3",
+        "composer/ca-bundle": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0"
