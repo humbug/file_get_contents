@@ -1,7 +1,7 @@
 humbug_get_contents
 ===================
 
-[![Build Status](https://travis-ci.org/padraic/file_get_contents.svg)](https://travis-ci.org/padraic/file_get_contents)
+[![Build Status](https://travis-ci.org/humbug/file_get_contents.svg)](https://travis-ci.org/humbug/file_get_contents)
 
 Defines a `humbug_get_contents()` function that will transparently call `file_get_contents()`,
 except for HTTPS URIs where it will inject a context configured to enable secure
