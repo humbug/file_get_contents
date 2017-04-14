@@ -21,6 +21,8 @@ class FileGetContents
     protected static $lastResponseHeaders;
 
     protected static $nextRequestHeaders;
+    
+    private static $foundCa = null;
 
     public function __construct()
     {
@@ -291,9 +293,8 @@ class FileGetContents
     */
     public static function getSystemCaRootBundlePath()
     {
-        static $found = null;
-        if ($found !== null) {
-            return $found;
+        if (self::$foundCa !== null) {
+            return self::$foundCa;
         }
 
         // If SSL_CERT_FILE env variable points to a valid certificate/bundle, use that.
@@ -301,7 +302,8 @@ class FileGetContents
         $envCertFile = getenv('SSL_CERT_FILE');
         if ($envCertFile && is_readable($envCertFile) && self::validateCaFile(file_get_contents($envCertFile))) {
             // Possibly throw exception instead of ignoring SSL_CERT_FILE if it's invalid?
-            return $envCertFile;
+            self::$foundCa = $envCertFile;
+            return self::$foundCa;
         }
 
         $caBundlePaths = array(
@@ -316,32 +318,28 @@ class FileGetContents
             '/etc/ssl/cert.pem', // OpenBSD
         );
 
-        $found = null;
         $configured = ini_get('openssl.cafile');
         if ($configured && strlen($configured) > 0 && is_readable($caBundle) && self::validateCaFile(file_get_contents($caBundle))) {
-            $found = true;
-            $caBundle = $configured;
-        } else {
-            foreach ($caBundlePaths as $caBundle) {
-                if (@is_readable($caBundle) && self::validateCaFile(file_get_contents($caBundle))) {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                foreach ($caBundlePaths as $caBundle) {
-                    $caBundle = dirname($caBundle);
-                    if (is_dir($caBundle) && glob($caBundle.'/*')) {
-                        $found = true;
-                        break;
-                    }
-                }
+            self::$foundCa = $configured;
+            return self::$foundCa;
+        } 
+    
+        foreach ($caBundlePaths as $caBundle) {
+            if (@is_readable($caBundle) && self::validateCaFile(file_get_contents($caBundle))) {
+                self::$foundCa = $caBundle;
+                return self::$foundCa;
             }
         }
-        if ($found) {
-            $found = $caBundle;
+        
+        foreach ($caBundlePaths as $caBundle) {
+            $caBundle = dirname($caBundle);
+            if (is_dir($caBundle) && glob($caBundle.'/*')) {
+                self::$foundCa = $caBundle;
+                return self::$foundCa;
+            }
         }
-        return $found;
+    
+        return null;
     }
 
     protected static function validateCaFile($contents) {
