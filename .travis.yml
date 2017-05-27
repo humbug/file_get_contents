@@ -22,4 +22,7 @@ before_script:
     - composer install --no-interaction --prefer-dist
 
 script:
-    - bin/phpunit --coverage-text
+    - php -d zend.enable_gc=0 bin/phpunit --coverage-text
+
+notifications:
+  email: false
