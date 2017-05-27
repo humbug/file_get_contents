@@ -84,9 +84,9 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
             'Accept-Language: da',
             'User-Agent: Humbug'
         ));
-        $out = humbug_get_contents('http://myhttp.info/');
-        $this->assertEquals(1, preg_match('%'.preg_quote('<td>Accept language</td><td>da</td>').'%', $out));
-        $this->assertEquals(1, preg_match('%'.preg_quote('<td>User agent</td><td>Humbug</td>').'%', $out));
+        $out = humbug_get_contents('http://www.procato.com/my+headers/');
+        $this->assertEquals(1, preg_match('%'.preg_quote('<th>Accept-Language</th><td>da</td>').'%', $out));
+        $this->assertEquals(1, preg_match('%'.preg_quote('<th>User-Agent</th><td>Humbug</td>').'%', $out));
     }
     
 }
