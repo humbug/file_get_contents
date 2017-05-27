@@ -33,11 +33,7 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
 
     public function testRating()
     {
-        if (PHP_VERSION_ID < 50600) {
-            $this->assertEquals('Improvable', self::$result['rating']);
-        } else {
-            $this->assertEquals('Probably Okay', self::$result['rating']);
-        }
+        $this->assertEquals('Probably Okay', self::$result['rating']);
     }
 
     public function testTlsCompression()
