@@ -1,21 +1,21 @@
 <?php
-/**
- * Humbug
+
+/*
+ * This file is part of the Humbug package.
  *
- * @category   Humbug
- * @package    Humbug
- * @subpackage UnitTests
- * @copyright  Copyright (c) 2015 Pádraic Brady (http://blog.astrumfutura.com)
- * @license    https://github.com/padraic/file_get_contents/blob/master/LICENSE New BSD License
+ * (c) 2015 Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Humbug\Test;
 
-use Humbug\FileGetContents;
-
+/**
+ * @coversNothing
+ */
 class FunctionTest extends \PHPUnit_Framework_TestCase
 {
-
     private static $result;
 
     public function setup()
@@ -84,5 +84,4 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, preg_match('%'.preg_quote('<th>Accept-Language</th><td>da</td>').'%', $out));
         $this->assertEquals(1, preg_match('%'.preg_quote('<th>User-Agent</th><td>Humbug</td>').'%', $out));
     }
-    
 }
