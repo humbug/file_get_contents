@@ -1,23 +1,25 @@
 language: php
 
 php:
-  - nightly # 7.0
-  - 5.6
-  - 5.5
-  - 5.4
-  - hhvm
-  - hhvm-nightly
+  - '5.3'
+  - '5.4'
+  - '5.5'
+  - '5.6'
+  - '7.0'
+  - '7.1'
+  - nightly
 
 matrix:
-    allow_failures:
-        - php: hhvm
-        - php: hhvm-nightly
+  fast_finish: true
+  allow_failures:
+    - php: nightly
 
-before_install:
-    - composer self-update
+cache:
+  directories:
+    - $HOME/.composer/cache/files
 
 before_script:
-    - travis_retry composer install --no-interaction --prefer-source
+    - composer install --no-interaction --prefer-dist
 
 script:
-    - vendor/bin/phpunit --coverage-text
+    - bin/phpunit --coverage-text

@@ -73,7 +73,7 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
 
     public function testCanGetResponseHeaders()
     {
-        humbug_set_headers(['Accept-Language: da\r\n']);
+        humbug_set_headers(array('Accept-Language: da\r\n'));
         humbug_get_contents('http://padraic.github.io');
         $this->assertTrue(count(humbug_get_headers()) > 0);
     }

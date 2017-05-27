@@ -1,5 +1,4 @@
-humbug_get_contents
-===================
+# humbug_get_contents
 
 [![Build Status](https://travis-ci.org/humbug/file_get_contents.svg)](https://travis-ci.org/humbug/file_get_contents)
 
@@ -14,15 +13,14 @@ PHAR files or API requests. Without SSL/TLS protections, all such requests are v
 to Man-In-The-Middle attacks where a hacker can inject a fake response, e.g. a tailored php
 file or json response.
 
-Installation
-============
+## Installation
 
 ```sh
 composer require padraic/humbug_get_contents
 ```
 
-Usage
-=====
+
+## Usage
 
 ```php
 $content = humbug_get_contents('https://www.howsmyssl.com/a/check');
@@ -44,7 +42,8 @@ actually the point ;). An error should have two causes:
 Neither is, in any way, a justification for disabling SSL/TLS and leaving end users vulnerable
 to getting hacked. Resolve such errors; don't ignore or workaround them.
 
-###Headers
+
+## Headers
 
 You can set request headers, and get response headers, using the following functions.
 This support is based around stream contexts, but is offered in some limited form
