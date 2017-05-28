@@ -1,11 +1,12 @@
 <?php
-/**
- * Humbug
+
+/*
+ * This file is part of the Humbug package.
  *
- * @category   Humbug
- * @package    Humbug
- * @copyright  Copyright (c) 2015 Pádraic Brady (http://blog.astrumfutura.com)
- * @license    https://github.com/padraic/file_get_contents/blob/master/LICENSE New BSD License
+ * (c) 2015 Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Humbug;
@@ -17,7 +18,6 @@ use Composer\CaBundle\CaBundle;
  */
 class FileGetContents
 {
-
     protected $options = array('http' => array());
 
     protected static $lastResponseHeaders;
@@ -37,6 +37,7 @@ class FileGetContents
         self::setHttpHeaders($context);
         $result = file_get_contents($filename, null, $context);
         self::setLastResponseHeaders($http_response_header);
+
         return $result;
     }
 
@@ -64,6 +65,7 @@ class FileGetContents
     {
         $return = self::$nextRequestHeaders;
         self::$nextRequestHeaders = null;
+
         return $return;
     }
 
@@ -87,11 +89,12 @@ class FileGetContents
                 $headers
             );
         }
+
         return $context;
     }
 
     protected function checkConfig()
-    {   
+    {
         if (!extension_loaded('openssl')) {
             throw new \RuntimeException(
                 'The openssl extension is not loaded but is required for secure HTTPS connections'
@@ -106,6 +109,7 @@ class FileGetContents
             $this->options['ssl']['CN_match'] = $host;
             $this->options['ssl']['SNI_server_name'] = $host;
         }
+
         return $this->getMergedStreamContext($url);
     }
 
@@ -192,8 +196,10 @@ class FileGetContents
      *     Jordi Boggiano <j.boggiano@seld.be>
      *
      * @param string $url URL the context is to be used for
-     * @return resource Default context
+     *
      * @throws \\RuntimeException if https proxy required and OpenSSL uninstalled
+     *
+     * @return resource Default context
      */
     protected function getMergedStreamContext($url)
     {
@@ -210,11 +216,11 @@ class FileGetContents
             $proxyURL .= isset($proxy['host']) ? $proxy['host'] : '';
 
             if (isset($proxy['port'])) {
-                $proxyURL .= ":" . $proxy['port'];
+                $proxyURL .= ':' . $proxy['port'];
             } elseif ('http://' == substr($proxyURL, 0, 7)) {
-                $proxyURL .= ":80";
+                $proxyURL .= ':80';
             } elseif ('https://' == substr($proxyURL, 0, 8)) {
-                $proxyURL .= ":443";
+                $proxyURL .= ':443';
             }
 
             // http(s):// is not supported in proxy
@@ -270,7 +276,8 @@ class FileGetContents
     /**
      * @deprecated
      */
-    protected static function validateCaFile($contents) {
+    protected static function validateCaFile($contents)
+    {
         // assume the CA is valid if php is vunerable to
         // https://www.sektioneins.de/advisories/advisory-012013-php-openssl_x509_parse-memory-corruption-vulnerability.html
         if (!CaBundle::isOpensslParseSafe()) {

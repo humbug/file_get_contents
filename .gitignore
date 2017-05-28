@@ -1,4 +1,6 @@
-/bin
 /composer.phar
 /composer.lock
 /vendor/
+/vendor-bin/*/vendor/
+/vendor-bin/*/composer.lock
+/.php_cs.cache

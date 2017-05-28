@@ -18,6 +18,7 @@
         "composer/ca-bundle": "^1.0"
     },
     "require-dev": {
+        "bamarni/composer-bin-plugin": "^1.1",
         "phpunit/phpunit": "~4.0"
     },
 
@@ -35,11 +36,18 @@
         }
     },
 
+    "scripts": {
+        "post-install-cmd": "@composer bin all install --ansi",
+        "post-update-cmd": "@composer bin all update --ansi"
+    },
+
     "config": {
-        "bin-dir": "bin",
         "sort-packages": true
     },
     "extra": {
+        "bamarni-bin": {
+            "bin-links": false
+        },
         "branch-alias": {
             "dev-master": "2.0-dev"
         }
