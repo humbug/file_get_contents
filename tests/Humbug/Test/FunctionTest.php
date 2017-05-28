@@ -12,6 +12,7 @@
 namespace Humbug\Test;
 
 use PHPUnit\Framework\TestCase;
+
 if (!class_exists('\PHPUnit\Framework\TestCase', true)) {
     class_alias('\PHPUnit_Framework_TestCase', 'TestCase');
 }

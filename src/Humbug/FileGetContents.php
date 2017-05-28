@@ -186,7 +186,7 @@ class FileGetContents
     }
 
     /**
-     * function copied from Composer\Util\StreamContextFactory::getContext
+     * Function copied from Composer\Util\StreamContextFactory::getContext
      *
      * This function is part of Composer.
      *
@@ -195,7 +195,7 @@ class FileGetContents
      *
      * @param string $url URL the context is to be used for
      *
-     * @throws \\RuntimeException if https proxy required and OpenSSL uninstalled
+     * @throws \RuntimeException If https proxy required and OpenSSL uninstalled
      *
      * @return resource Default context
      */
