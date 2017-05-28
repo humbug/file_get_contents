@@ -12,21 +12,21 @@
 namespace Humbug;
 
 use Composer\CaBundle\CaBundle;
+use RuntimeException;
 
 /**
  * This is largely extracted from the Composer Installer where originally implemented.
  */
 class FileGetContents
 {
-    protected $options = array('http' => array());
-
     protected static $lastResponseHeaders;
 
     protected static $nextRequestHeaders;
 
+    protected $options = array('http' => array());
+
     public function __construct()
     {
-        $this->checkConfig();
         $options = $this->getTlsStreamContextDefaults(null);
         $this->options = array_replace_recursive($this->options, $options);
     }
@@ -93,15 +93,6 @@ class FileGetContents
         return $context;
     }
 
-    protected function checkConfig()
-    {
-        if (!extension_loaded('openssl')) {
-            throw new \RuntimeException(
-                'The openssl extension is not loaded but is required for secure HTTPS connections'
-            );
-        }
-    }
-
     protected function getStreamContext($url)
     {
         $host = parse_url($url, PHP_URL_HOST);
@@ -113,6 +104,13 @@ class FileGetContents
         return $this->getMergedStreamContext($url);
     }
 
+    /**
+     * @param string $cafile
+     *
+     * @return array
+     *
+     * @private since 1.1.0
+     */
     protected function getTlsStreamContextDefaults($cafile)
     {
         $ciphers = implode(':', array(
@@ -177,7 +175,7 @@ class FileGetContents
         } elseif ($cafile) {
             $options['ssl']['cafile'] = $cafile;
         } else {
-            throw new \RuntimeException('A valid cafile could not be located locally.');
+            throw new RuntimeException('A valid cafile could not be located locally.');
         }
 
         if (version_compare(PHP_VERSION, '5.4.13') >= 0) {
@@ -227,7 +225,7 @@ class FileGetContents
             $proxyURL = str_replace(array('http://', 'https://'), array('tcp://', 'ssl://'), $proxyURL);
 
             if (0 === strpos($proxyURL, 'ssl:') && !extension_loaded('openssl')) {
-                throw new \RuntimeException('You must enable the openssl extension to use a proxy over https');
+                throw new RuntimeException('You must enable the openssl extension to use a proxy over https');
             }
 
             $options['http'] = array(
@@ -278,7 +276,7 @@ class FileGetContents
      */
     protected static function validateCaFile($contents)
     {
-        // assume the CA is valid if php is vunerable to
+        // assume the CA is valid if php is vulnerable to
         // https://www.sektioneins.de/advisories/advisory-012013-php-openssl_x509_parse-memory-corruption-vulnerability.html
         if (!CaBundle::isOpensslParseSafe()) {
             return !empty($contents);
