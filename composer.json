@@ -25,10 +25,11 @@
 
     "autoload": {
         "psr-4": {
-            "Humbug\\": "src/Humbug/"
+            "Humbug\\": "src/"
         },
         "files": [
-            "src/function.php"
+            "src/function.php",
+            "src/functions.php"
         ]
     },
     "autoload-dev": {

@@ -19,8 +19,18 @@ use RuntimeException;
  */
 class FileGetContents
 {
+    /**
+     * @var array|null
+     *
+     * @private
+     */
     protected static $lastResponseHeaders;
 
+    /**
+     * @var array|null
+     *
+     * @private
+     */
     protected static $nextRequestHeaders;
 
     protected $options = array('http' => array());
@@ -31,36 +41,68 @@ class FileGetContents
         $this->options = array_replace_recursive($this->options, $options);
     }
 
+    /**
+     * @param string              $filename Name of the file to read.
+     * @param resource|array|null $context A valid context resource created with `stream_context_create()`. If you don't
+     *                                     need to use a custom context, you can skip this parameter.
+     *
+     * @return bool|string
+     */
     public function get($filename, $context = null)
     {
         $context = $this->getStreamContext($filename);
-        self::setHttpHeaders($context);
+        $context = self::setHttpHeaders($context);
+
         $result = file_get_contents($filename, null, $context);
+
         self::setLastResponseHeaders($http_response_header);
 
         return $result;
     }
 
+    /**
+     * @param array $headers
+     *
+     * @final Since 1.1.0
+     */
     public static function setLastResponseHeaders($headers)
     {
         self::$lastResponseHeaders = $headers;
     }
 
+    /**
+     * @return array|null
+     *
+     * @final Since 1.1.0
+     */
     public static function getLastResponseHeaders()
     {
         return self::$lastResponseHeaders;
     }
-    
+
+    /**
+     * @param array $headers An indexed or associative array.
+     *
+     * @final since 1.1.0
+     */
     public static function setNextRequestHeaders(array $headers)
     {
         self::$nextRequestHeaders = $headers;
     }
 
+    /**
+     * @return bool
+     *
+     * @final since 1.1.0
+     */
     public static function hasNextRequestHeaders()
     {
-        return !empty(self::$nextRequestHeaders);
+        return null !== self::$nextRequestHeaders;
     }
 
+    /**
+     * @return array|null An indexed or associative array whence there is any headers, `null` otherwise.
+     */
     public static function getNextRequestHeaders()
     {
         $return = self::$nextRequestHeaders;
@@ -69,33 +111,56 @@ class FileGetContents
         return $return;
     }
 
+    /**
+     * @param resource|array|null $context A valid context resource created with `stream_context_create()`. If you don't
+     *                                     need to use a custom context, you can skip this parameter.
+     *
+     * @return resource|array|null Context to which the headers has been set.
+     *
+     * @private since 1.1.0
+     *
+     * TODO (2.0.0): change the name to reflect on the immutable side.
+     */
     public static function setHttpHeaders($context)
     {
         $headers = self::getNextRequestHeaders();
-        if (!empty($headers)) {
-            $options = stream_context_get_options($context);
-            if (!isset($options['http'])) {
-                $options['http'] = array('header'=>array());
-            } elseif (!isset($options['http']['header'])) {
-                $options['http']['header'] = array();
-            } elseif (is_string($options['http']['header'])) {
-                $options['http']['header'] = explode("\r\n", $options['http']['header']);
-            }
-            $headers = empty($options['http']['headers']) ? $headers : array_merge($options['http']['headers'], $headers);
-            stream_context_set_option(
-                $context,
-                'http',
-                'header',
-                $headers
-            );
+
+        if (empty($headers)) {
+            return $context;
         }
+
+        $options = stream_context_get_options($context);
+        if (!isset($options['http'])) {
+            $options['http'] = array('header' => array());
+        } elseif (!isset($options['http']['header'])) {
+            $options['http']['header'] = array();
+        } elseif (is_string($options['http']['header'])) {
+            $options['http']['header'] = explode("\r\n", $options['http']['header']);
+        }
+
+        $headers = empty($options['http']['headers']) ? $headers : array_merge($options['http']['headers'], $headers);
+
+        stream_context_set_option(
+            $context,
+            'http',
+            'header',
+            $headers
+        );
 
         return $context;
     }
 
+    /**
+     * @param string $url URL path to access to the file to read.
+     *
+     * @return resource
+     *
+     * @final since 1.1.0
+     */
     protected function getStreamContext($url)
     {
         $host = parse_url($url, PHP_URL_HOST);
+
         if (PHP_VERSION_ID < 50600) {
             $this->options['ssl']['CN_match'] = $host;
             $this->options['ssl']['SNI_server_name'] = $host;
@@ -110,6 +175,9 @@ class FileGetContents
      * @return array
      *
      * @private since 1.1.0
+     *
+     * TODO (2.0.0): remove argument (unnused in the codebase) and rename this method as an `init*` as is used in the
+     *               constructor anymore
      */
     protected function getTlsStreamContextDefaults($cafile)
     {
@@ -198,6 +266,8 @@ class FileGetContents
      * @throws \RuntimeException If https proxy required and OpenSSL uninstalled
      *
      * @return resource Default context
+     *
+     * @final since 1.1.0
      */
     protected function getMergedStreamContext($url)
     {
@@ -210,11 +280,11 @@ class FileGetContents
         }
 
         if (!empty($proxy)) {
-            $proxyURL = isset($proxy['scheme']) ? $proxy['scheme'] . '://' : '';
+            $proxyURL = isset($proxy['scheme']) ? $proxy['scheme'].'://' : '';
             $proxyURL .= isset($proxy['host']) ? $proxy['host'] : '';
 
             if (isset($proxy['port'])) {
-                $proxyURL .= ':' . $proxy['port'];
+                $proxyURL .= ':'.$proxy['port'];
             } elseif ('http://' == substr($proxyURL, 0, 7)) {
                 $proxyURL .= ':80';
             } elseif ('https://' == substr($proxyURL, 0, 8)) {
@@ -229,20 +299,20 @@ class FileGetContents
             }
 
             $options['http'] = array(
-                'proxy'           => $proxyURL,
+                'proxy' => $proxyURL,
             );
 
             // enabled request_fulluri unless it is explicitly disabled
             switch (parse_url($url, PHP_URL_SCHEME)) {
                 case 'http': // default request_fulluri to true
                     $reqFullUriEnv = getenv('HTTP_PROXY_REQUEST_FULLURI');
-                    if ($reqFullUriEnv === false || $reqFullUriEnv === '' || (strtolower($reqFullUriEnv) !== 'false' && (bool) $reqFullUriEnv)) {
+                    if ($reqFullUriEnv === false || $reqFullUriEnv === '' || (strtolower($reqFullUriEnv) !== 'false' && (bool)$reqFullUriEnv)) {
                         $options['http']['request_fulluri'] = true;
                     }
                     break;
                 case 'https': // default request_fulluri to true
                     $reqFullUriEnv = getenv('HTTPS_PROXY_REQUEST_FULLURI');
-                    if ($reqFullUriEnv === false || $reqFullUriEnv === '' || (strtolower($reqFullUriEnv) !== 'false' && (bool) $reqFullUriEnv)) {
+                    if ($reqFullUriEnv === false || $reqFullUriEnv === '' || (strtolower($reqFullUriEnv) !== 'false' && (bool)$reqFullUriEnv)) {
                         $options['http']['request_fulluri'] = true;
                     }
                     break;
@@ -252,7 +322,7 @@ class FileGetContents
             if (isset($proxy['user'])) {
                 $auth = urldecode($proxy['user']);
                 if (isset($proxy['pass'])) {
-                    $auth .= ':' . urldecode($proxy['pass']);
+                    $auth .= ':'.urldecode($proxy['pass']);
                 }
                 $auth = base64_encode($auth);
 
@@ -264,24 +334,29 @@ class FileGetContents
     }
 
     /**
-     * @deprecated
+     * @deprecated since 1.1.0 and will be removed in 2.0.0.
      */
     public static function getSystemCaRootBundlePath()
     {
+        @trigger_error(
+            'Deprecated since 1.1.0. Use `Composer\CaBundle\CaBundle::getSystemCaRootBundlePath()` instead.',
+            E_USER_DEPRECATED
+        );
+
         return CaBundle::getSystemCaRootBundlePath();
     }
 
     /**
-     * @deprecated
+     * @deprecated since 1.1.0 and will be removed in 2.0.0.
      */
     protected static function validateCaFile($contents)
     {
-        // assume the CA is valid if php is vulnerable to
+        // Assumes the CA is valid if PHP is vulnerable to
         // https://www.sektioneins.de/advisories/advisory-012013-php-openssl_x509_parse-memory-corruption-vulnerability.html
         if (!CaBundle::isOpensslParseSafe()) {
             return !empty($contents);
         }
 
-        return (bool) openssl_x509_parse($contents);
+        return (bool)openssl_x509_parse($contents);
     }
 }
