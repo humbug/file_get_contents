@@ -1,5 +1,5 @@
-PHP_CS_FIXER=php -d zend.enable_gc=0 vendor-bin/php-cs-fixer/bin/php-cs-fixer
-PHPUNIT=php -d zend.enable_gc=0 bin/phpunit
+PHP_CS_FIXER=php -d zend.enable_gc=0 vendor-bin/php-cs-fixer/vendor/bin/php-cs-fixer
+PHPUNIT=php -d zend.enable_gc=0 vendor/bin/phpunit
 
 .DEFAULT_GOAL := help
 .PHONY: test tu cs

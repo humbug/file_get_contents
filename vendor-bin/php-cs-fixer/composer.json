@@ -3,7 +3,6 @@
         "friendsofphp/php-cs-fixer": "^2.3"
     },
     "config": {
-        "bin-dir": "bin",
         "sort-packages": true
     }
 }
