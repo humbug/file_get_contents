@@ -19,7 +19,7 @@ namespace Humbug;
  * @param resource|array|null $context A valid context resource created with `stream_context_create()`. If you don't
  *                                     need to use a custom context, you can skip this parameter.
  *
- * @return string|bool The function returns the read data or `false` on failure.
+ * @return string|bool The read data or `false` on failure.
  */
 function get_contents($filename, $use_include_path = false, $context = null)
 {

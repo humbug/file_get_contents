@@ -46,7 +46,7 @@ class FileGetContents
      * @param resource|array|null $context A valid context resource created with `stream_context_create()`. If you don't
      *                                     need to use a custom context, you can skip this parameter.
      *
-     * @return bool|string
+     * @return bool|string The read data or `false` on failure.
      */
     public function get($filename, $context = null)
     {
@@ -61,7 +61,7 @@ class FileGetContents
     }
 
     /**
-     * @param array $headers
+     * @param array $headers HTTP response headers.
      *
      * @final Since 1.1.0
      */
@@ -71,7 +71,7 @@ class FileGetContents
     }
 
     /**
-     * @return array|null
+     * @return array|null HTTP response headers for the last response recorded or `null` if none has been recorded.
      *
      * @final Since 1.1.0
      */
