@@ -72,3 +72,12 @@ To retrieve an array of the last response headers:
 $response = Humbug\get_contents('http://www.example.com');
 $headers = Humbug\get_headers();
 ```
+
+## Upgrade
+
+[Upgrade Guide](UPGRADE.md)
+
+
+## Contributing
+
+[Contribution Guide](CONTRIBUTING.md)
