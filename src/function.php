@@ -9,44 +9,41 @@
  * file that was distributed with this source code.
  */
 
-use Humbug\FileGetContents;
-
 if (!function_exists('humbug_get_contents')) {
     function humbug_get_contents($filename, $use_include_path = false, $context = null)
     {
-        static $fileGetContents = null;
+        @trigger_error(
+            'humbug_get_contents() is deprecated since 1.1.0 and will be removed in 4.0.0. Use '
+            .'Humbug/get_contents() instead.',
+            E_USER_DEPRECATED
+        );
 
-        if ('https' == parse_url($filename, PHP_URL_SCHEME) && PHP_VERSION_ID < 50600) {
-            if (!isset($fileGetContents)) {
-                $fileGetContents = new FileGetContents();
-            }
-
-            return $fileGetContents->get($filename, $context);
-        } elseif (FileGetContents::hasNextRequestHeaders()) {
-            if ($context === null) {
-                $context = stream_context_create();
-            }
-            $context = FileGetContents::setHttpHeaders($context);
-        }
-        $return = file_get_contents($filename, $use_include_path, $context);
-        if (isset($http_response_header)) {
-            FileGetContents::setLastResponseHeaders($http_response_header);
-        }
-
-        return $return;
+        return Humbug\get_contents($filename, $use_include_path, $context);
     }
 }
 
 if (!function_exists('humbug_get_headers')) {
     function humbug_get_headers()
     {
-        return FileGetContents::getLastResponseHeaders();
+        @trigger_error(
+            'humbug_get_headers() is deprecated since 1.1.0 and will be removed in 4.0.0. Use '
+            .'Humbug/get_headers() instead.',
+            E_USER_DEPRECATED
+        );
+
+        return Humbug\get_headers();
     }
 }
 
 if (!function_exists('humbug_set_headers')) {
     function humbug_set_headers(array $headers)
     {
-        FileGetContents::setNextRequestHeaders($headers);
+        @trigger_error(
+            'humbug_set_headers() is deprecated since 1.1.0 and will be removed in 4.0.0. Use '
+            .'Humbug/get_headers() instead.',
+            E_USER_DEPRECATED
+        );
+
+        Humbug\set_headers($headers);
     }
 }
