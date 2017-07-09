@@ -13,7 +13,7 @@ if (!function_exists('humbug_get_contents')) {
     function humbug_get_contents($filename, $use_include_path = false, $context = null)
     {
         @trigger_error(
-            'humbug_get_contents() is deprecated since 1.1.0 and will be removed in 4.0.0. Use '
+            'humbug_get_contents() is deprecated since 1.1.0 and will be removed in 2.0.0. Use '
             .'Humbug/get_contents() instead.',
             E_USER_DEPRECATED
         );
@@ -26,7 +26,7 @@ if (!function_exists('humbug_get_headers')) {
     function humbug_get_headers()
     {
         @trigger_error(
-            'humbug_get_headers() is deprecated since 1.1.0 and will be removed in 4.0.0. Use '
+            'humbug_get_headers() is deprecated since 1.1.0 and will be removed in 2.0.0. Use '
             .'Humbug/get_headers() instead.',
             E_USER_DEPRECATED
         );
@@ -39,7 +39,7 @@ if (!function_exists('humbug_set_headers')) {
     function humbug_set_headers(array $headers)
     {
         @trigger_error(
-            'humbug_set_headers() is deprecated since 1.1.0 and will be removed in 4.0.0. Use '
+            'humbug_set_headers() is deprecated since 1.1.0 and will be removed in 2.0.0. Use '
             .'Humbug/get_headers() instead.',
             E_USER_DEPRECATED
         );
