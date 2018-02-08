@@ -1,4 +1,0 @@
-- set correct Travis CI setting
-- set the current version for PHPUnit, and PHP.
-- using the vfsStream to mock the file system.
-- add the PHP 7.2 test
