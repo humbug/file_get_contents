@@ -12,20 +12,15 @@
 namespace Humbug\Test;
 
 use PHPUnit\Framework\TestCase;
+use org\bovigo\vfs\vfsStream;
 
-if (!class_exists('\PHPUnit\Framework\TestCase', true)) {
-    class_alias('\PHPUnit_Framework_TestCase', 'TestCase');
-}
-
-/**
- * @coversNothing
- */
 class FunctionTest extends TestCase
 {
     private static $result;
 
     public function setup()
     {
+        vfsStream::setup('home_root_path');
         if (null === self::$result) {
             $result = humbug_get_contents('https://www.howsmyssl.com/a/check');
             self::$result = json_decode($result, true);
@@ -34,7 +29,7 @@ class FunctionTest extends TestCase
 
     public function teardown()
     {
-        @unlink(sys_get_temp_dir() . '/humbug.tmp');
+        self::$result = null;
     }
 
     public function testRating()
@@ -69,8 +64,8 @@ class FunctionTest extends TestCase
 
     public function testFileGetContentsWillPassThrough()
     {
-        file_put_contents(sys_get_temp_dir() . '/humbug.tmp', ($expected = uniqid()), LOCK_EX);
-        $this->assertEquals(file_get_contents(sys_get_temp_dir() . '/humbug.tmp'), $expected);
+        file_put_contents(vfsStream::url('home_root_path/humbug.tmp'), ($expected = uniqid()));
+        $this->assertEquals(file_get_contents(vfsStream::url('home_root_path/humbug.tmp')), $expected);
     }
 
     public function testCanGetResponseHeaders()
