@@ -22,7 +22,7 @@ cache:
     - $HOME/.composer/cache/files
 
 before_script:
-    - composer install
+    - composer install --no-progress --no-suggest
 
 script:
     - php -d zend.enable_gc=0 vendor/bin/phpunit --coverage-text
