@@ -273,10 +273,15 @@ class FileGetContents
     {
         $options = $this->options;
 
-        // Handle system proxy
-        if (!empty($_SERVER['HTTP_PROXY']) || !empty($_SERVER['http_proxy'])) {
-            // Some systems seem to rely on a lowercased version instead...
-            $proxy = parse_url(!empty($_SERVER['http_proxy']) ? $_SERVER['http_proxy'] : $_SERVER['HTTP_PROXY']);
+        // See CVE-2016-5385, due to (emulation of) header copying with PHP web SAPIs into HTTP_* variables,
+        // HTTP_PROXY can be set by an user to any value he wants by setting the Proxy header.
+        // Mitigate the vulnerability by only allowing CLI SAPIs to use HTTP(S)_PROXY environment variables.
+        if (PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg') {
+            // Handle system proxy
+            if (!empty($_SERVER['HTTP_PROXY']) || !empty($_SERVER['http_proxy'])) {
+                // Some systems seem to rely on a lowercased version instead...
+                $proxy = parse_url(!empty($_SERVER['http_proxy']) ? $_SERVER['http_proxy'] : $_SERVER['HTTP_PROXY']);
+            }
         }
 
         if (!empty($proxy)) {
